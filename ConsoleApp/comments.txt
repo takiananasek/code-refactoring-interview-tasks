@@ -1,0 +1,43 @@
+﻿Lista zmian i uwag - refactoring kodu
+
+1. Program.cs metoda Main linijka 15 błędna nazwa pliku - powinno być "data.csv"
+
+2. Klasy powinny zostać rozdzielone w foldery: Models, Services
+
+3. Złe formatowanie getterów i setterów w klasie ImportedObject, pola Schema, 
+NumberOfChildren i ParentName również powinny być propertiesami, zapewnia to lepszą 
+enkapsulację danych oraz większą kontrolę nad danymi - dodaję {get; set;}. 
+Usuwam property Name z klasy ImportedObject, ponieważ zawiera go już klasa bazowa.
+
+4. Zmienić nazwę klasy ImportedObjectBaseClass na ImportedObjectBase
+
+5. Parametr printData = true niepotrzebny w sygnaturze metody ImportAndPrintData
+
+6. DataReader 32-39 - wartości properties przypisujemy od razu przy tworzeniu obiektu
+
+7. DataReader linijka 17, można uprościć
+
+8. Metoda ImportAndPrintData zwraca błąd ponieważ tablica values ma różną długość 
+w zależności od przypadku (sytuacja gdy w pliku wejściowym dane nie są w pełni uzupełnione 
+- są puste miejsca). Dodaję pętle w której standaryzuję długość tablicy i w puste miejsca 
+wpisuję pustego stringa (tablica valuesToAssign).
+
+9. Sekcja assign  number of children - można uprościć inkrementację liczby 
+dzieci przez zastosowanie operatora +=, można uprościć zagnieżdżoną instrukcję 
+warunkową przez zastosowanie operatora '&&'
+
+10. W sekcj i //print all databases tables kod nie obsługuje sytuacji, gdy 
+properties są nullami i próbuje wywołać metody na nullach. Należy użyć operatora '?'
+
+11. Program.cs usingi są zbędne, bo dane biblioteki nie są używane, podobnie w DataReader.cs 
+- dwie linijki są zbędne
+
+12. Metoda ImportAndPrintData jest długa, można rozdzielić ją na pomniejsze zadania - metody
+
+13. Zmiana modyfikatorów dostępu klas ImportedObject i ImportedObjectBase na public
+
+14. Zrezygnowałabym z interfejsu IEnumerable w klasie DataReader, bo nic nie 
+jest wstrzykiwane w tej klasie. Wiemy jaki jest typ listy danych, których potrzebujemy. 
+Zmieniam typ na List<ImportedObject> aby wyeliminować późniejszą konieczność castowania. 
+Dodatkowo property to powinno być readonly - chcemy modyfikować listę tylko w obrębie klasy
+DataReader
